@@ -31,6 +31,11 @@ jobs:
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
+      - name: Lowercase the repo owner
+        run: |
+          echo "OWNER_LC=${OWNER,,}" >>${GITHUB_ENV}
+        env:
+          OWNER: '${{ github.repository_owner }}'
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
@@ -39,7 +44,7 @@ jobs:
           push: true
           platforms: linux/amd64,linux/arm64
           tags: |
-            ghcr.io/${{ github.repository_owner }}/ocone:8892
+            ghcr.io/${{ env.OWNER_LC }}/ocone:8892
           labels: |
             org.opencontainers.image.source=https://github.com/${{ github.repository }}
             org.opencontainers.image.description=HTTP Server
